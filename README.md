@@ -63,7 +63,11 @@ After connecting the repository:
    the `SMTP_*` settings, `FIRM_PHONE`, `FIRM_WHATSAPP`, `FIRM_EMAIL`, the `BANK_*` details and
    `ATTESTATION_FEE`. Then redeploy: phone numbers and limits are written into the pages at build time.
 2. Make sure Blob storage is available for the project (EdgeOne console, project **Storage** section).
-3. Open `/admin`, sign in, and upload the stamp with the **Stamp** button.
+3. Open `/api/health`: it should show `"ok":true` and `"passwordSet":true`. If the page is not found,
+   the Node Function was not deployed; check the deployment log in EdgeOne.
+4. Open `/admin`, sign in, and upload the stamp with the **Stamp** button.
+
+Environment variable changes only take effect after a new deployment (Deployments → Redeploy).
 
 On EdgeOne each document is limited to 5 MB in total, because EdgeOne functions can send at most
 6 MB at a time. Large photos are shrunk in the browser before upload, so phone photos fit easily.

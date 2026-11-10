@@ -164,10 +164,13 @@
       credentials: "same-origin",
       signal,
     });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
+    // A missing API answers with a web page instead of JSON; report that as its own case.
+    const isJson = (res.headers.get("content-type") || "").includes("application/json");
+    const data = isJson ? await res.json().catch(() => ({})) : {};
+    if (!res.ok || !isJson) {
       const err = new Error(data.error || `Something went wrong (error ${res.status}). Please try again.`);
-      err.status = res.status;
+      err.status = res.ok ? 0 : res.status;
+      err.notJson = !isJson;
       throw err;
     }
     return data;

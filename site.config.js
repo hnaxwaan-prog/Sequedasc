@@ -7,8 +7,8 @@ module.exports = {
   attorneyName: "Uz. Hussain Layan",
   licenseNo: "PL-2024/13",
 
-  phone: env("FIRM_PHONE", "+960 000 0000"),
-  whatsapp: env("FIRM_WHATSAPP", "9600000000"), // digits only, with country code
+  phone: env("FIRM_PHONE", "+960 7911497"),
+  whatsapp: env("FIRM_WHATSAPP", "9607911497"), // digits only, with country code
   email: env("FIRM_EMAIL", "info@hlattorney.mv"),
   address: env("FIRM_ADDRESS", "Malé, Republic of Maldives"),
   hours: env("FIRM_HOURS", "Sunday – Thursday, 9:00 AM – 5:00 PM"),
@@ -17,7 +17,7 @@ module.exports = {
   attestation: {
     currency: env("ATTESTATION_CURRENCY", "MVR"),
     // Fee pre-filled for the attorney when approving. It can be changed per request.
-    defaultFee: Number(env("ATTESTATION_FEE", "0")),
+    defaultFee: Number(env("ATTESTATION_FEE", "10")),
     // When true, the client can download only after the attorney confirms the payment slip.
     // When false (default), the download unlocks as soon as the slip is uploaded.
     requirePaymentVerification: env("REQUIRE_PAYMENT_VERIFICATION", "false") === "true",
