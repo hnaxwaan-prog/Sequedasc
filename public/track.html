@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your Attestation | HL Attorney at Law</title>
+  <meta name="robots" content="noindex" />
+  <meta name="referrer" content="no-referrer" />
+  <meta name="theme-color" content="#fbf8f3" />
+  <link rel="icon" href="/assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/site.css" />
+  <link rel="stylesheet" href="/css/app.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script src="/site-config.js"></script>
+  <script src="/js/site.js" defer></script>
+  <script src="/js/track.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <div class="topbar">
+    <div class="container topbar__inner">
+      <span><svg class="icon"><use href="/assets/icons.svg#clock"/></svg><span data-site="hours"></span></span>
+      <span class="topbar__links">
+        <a data-site-href="phone" href="#"><svg class="icon"><use href="/assets/icons.svg#phone"/></svg><span data-site="phone"></span></a>
+        <a data-site-href="email" href="#"><svg class="icon"><use href="/assets/icons.svg#mail"/></svg><span data-site="email"></span></a>
+      </span>
+    </div>
+  </div>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a href="/" class="brand" aria-label="HL Attorney at Law, home">
+        <img src="/assets/logo.png" alt="" class="brand__logo" width="34" height="38" />
+        <span class="brand__name"><b>HL</b> Attorney at Law</span>
+      </a>
+      <nav class="nav" id="nav" aria-label="Main">
+        <a href="/#about">About</a>
+        <a href="/#services">Practice Areas</a>
+        <a href="/attest" class="nav__new">Attestation <span class="tag">Online</span></a>
+        <a href="/#process">How We Work</a>
+        <a href="/#faq">FAQ</a>
+        <a href="/#contact" class="btn btn--primary btn--sm">Book a Consultation</a>
+      </nav>
+      <button class="burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <p class="crumbs"><a href="/">Home</a><span>/</span><a href="/attest">Document attestation</a><span>/</span><span>Your request</span></p>
+        <p class="eyebrow">Attestation request</p>
+        <h1 id="trackTitle">Your request</h1>
+        <p class="page-hero__lead" id="trackLead">Loading your request…</p>
+      </div>
+    </section>
+
+    <section class="section section--tight">
+      <div class="container layout">
+        <div>
+          <div class="form-card status-card" id="statusCard">
+            <div class="skeleton"></div>
+          </div>
+        </div>
+        <aside class="aside">
+          <div class="panel" id="summary" hidden>
+            <h3>Request details</h3>
+            <dl class="kv" id="summaryList"></dl>
+          </div>
+          <div class="panel">
+            <h3>Need help?</h3>
+            <p>Questions about your attestation? Call <a data-site="phone" href="#"></a> or message us on WhatsApp.</p>
+            <a href="#" class="btn btn--outline btn--sm js-whatsapp"><svg class="icon"><use href="/assets/icons.svg#whatsapp"/></svg>WhatsApp</a>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div>
+        <a href="/" class="brand brand--light">
+          <img src="/assets/logo-white.png" alt="" class="brand__logo" width="34" height="38" />
+          <span class="brand__name"><b>HL</b> Attorney at Law</span>
+        </a>
+        <p class="footer__tag">Integrity. Expertise. Dedication.</p>
+        <p><span data-site="attorneyName"></span> · Licence <span data-site="licenseNo"></span></p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <a href="/attest">Document Attestation</a>
+        <a href="/attest#verify">Verify an Attestation</a>
+        <a href="/#services">Practice Areas</a>
+        <a href="/#contact">Book a Consultation</a>
+      </div>
+      <div>
+        <h4>Firm</h4>
+        <a href="/#about">About</a>
+        <a href="/#process">How We Work</a>
+        <a href="/#faq">FAQ</a>
+        <a href="/admin">Attorney Login</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a data-site="phone" href="#"></a>
+        <a data-site="email" href="#"></a>
+        <p data-site="address"></p>
+      </div>
+    </div>
+    <div class="container footer__bottom">
+      <p>© <span data-year></span> HL Attorney at Law. All rights reserved.</p>
+      <p>The information on this website is general and is not legal advice. Contacting us does not create an attorney–client relationship.</p>
+    </div>
+  </footer>
+
+  <a href="#" class="wa js-whatsapp" aria-label="Chat with us on WhatsApp">
+    <span class="wa__tip">Questions? Chat with us</span>
+    <span class="wa__btn"><svg class="icon"><use href="/assets/icons.svg#whatsapp"/></svg></span>
+  </a>
+</body>
+</html>

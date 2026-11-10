@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Attestation Desk | HL Attorney at Law</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="icon" href="/assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/site.css" />
+  <link rel="stylesheet" href="/css/app.css" />
+  <script src="/site-config.js"></script>
+  <script src="/js/site.js" defer></script>
+  <script src="/js/admin.js" defer></script>
+</head>
+<body class="admin">
+  <header class="admin-bar">
+    <div class="admin-bar__inner">
+      <div style="display:flex;align-items:center">
+        <a href="/" class="brand" aria-label="Website home">
+          <img src="/assets/logo.png" alt="" class="brand__logo" width="34" height="38" />
+          <span class="brand__name"><b>HL</b> Attorney at Law</span>
+        </a>
+        <span class="admin-bar__title">Attestation Desk</span>
+      </div>
+      <div class="admin-bar__actions" id="barActions" hidden>
+        <button class="btn btn--quiet" id="stampBtn" type="button"><svg class="icon"><use href="/assets/icons.svg#stamp"/></svg>Stamp</button>
+        <button class="btn btn--quiet" id="refreshBtn" type="button">Refresh</button>
+        <button class="btn btn--quiet" id="logoutBtn" type="button">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="login" id="loginView" hidden>
+    <form class="form-card" id="loginForm" novalidate>
+      <img src="/assets/logo.png" alt="" />
+      <h3>Attorney sign in</h3>
+      <p>Review, stamp and approve documents submitted online.</p>
+      <label class="field"><span>Password</span><input type="password" name="password" autocomplete="current-password" required /></label>
+      <p class="alert" id="loginError" role="alert" hidden></p>
+      <button class="btn btn--primary btn--block" type="submit">Sign in</button>
+    </form>
+  </section>
+
+  <div class="desk" id="deskView" hidden>
+    <aside class="queue" aria-label="Requests">
+      <div class="queue__top">
+        <label class="search"><svg class="icon"><use href="/assets/icons.svg#search"/></svg><input id="search" type="search" placeholder="Search name, reference or email" /></label>
+        <div class="filters" id="filters" role="tablist"></div>
+      </div>
+      <ul class="queue__list" id="queue"></ul>
+    </aside>
+    <section class="detail" id="detail" aria-live="polite"></section>
+  </div>
+
+  <dialog class="dialog" id="stampDialog" aria-labelledby="stampTitle">
+    <form class="dialog__inner" id="stampForm" novalidate>
+      <div class="dialog__head">
+        <h3 id="stampTitle">Attestation stamp</h3>
+        <button class="icon-btn" type="button" data-close aria-label="Close"><svg class="icon"><use href="/assets/icons.svg#x"/></svg></button>
+      </div>
+      <p class="hint">This image is printed on every attested page. The date and reference number are added automatically. Use the prepared PNG with a transparent background. It stays private on the server and is never published.</p>
+      <div id="stampCurrent"></div>
+      <div class="drop" id="stampDrop">
+        <input type="file" name="stamp" accept="image/png" aria-label="Choose stamp PNG" />
+        <span class="drop__icon"><svg class="icon"><use href="/assets/icons.svg#upload"/></svg></span>
+        <b id="stampFileName">Choose the stamp <u>PNG</u></b>
+        <small>PNG with transparent background · max 8 MB</small>
+      </div>
+      <p class="alert" id="stampError" role="alert" hidden></p>
+      <div class="dialog__actions">
+        <button class="btn btn--quiet" type="button" data-close>Close</button>
+        <button class="btn btn--primary" type="submit" id="stampSave">Upload stamp</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status"></div>
+</body>
+</html>
