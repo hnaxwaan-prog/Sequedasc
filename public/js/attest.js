@@ -1,6 +1,6 @@
 /* Attestation request form + verification */
 (() => {
-  const { $, $$, esc, bytes, api, copy, SITE } = window.HL;
+  const { $, $$, esc, bytes, api, copy, SITE, shrinkImage, uploadFile } = window.HL;
   const LIMITS = SITE.attestation;
   const MB = 1024 * 1024;
   const OK_TYPES = ["application/pdf", "image/jpeg", "image/png"];
@@ -24,18 +24,26 @@
   };
 
   /* ---- Files ---- */
-  function addFiles(incoming) {
+  let adding = Promise.resolve();
+  const addFiles = (incoming) => (adding = adding.then(() => addNow(incoming)));
+
+  async function addNow(incoming) {
     const problems = [];
-    for (const f of incoming) {
-      if (!OK_TYPES.includes(f.type) && !OK_EXT.test(f.name)) problems.push(`"${f.name}" is not a PDF, JPG or PNG.`);
-      else if (f.size > LIMITS.maxFileMB * MB) problems.push(`"${f.name}" is larger than ${LIMITS.maxFileMB} MB.`);
+    drop.classList.add("is-busy");
+    for (const original of incoming) {
+      if (!OK_TYPES.includes(original.type) && !OK_EXT.test(original.name)) {
+        problems.push(`"${original.name}" is not a PDF, JPG or PNG.`);
+        continue;
+      }
+      const f = await shrinkImage(original);
+      if (f.size > LIMITS.maxFileMB * MB) problems.push(`"${f.name}" is larger than ${LIMITS.maxFileMB} MB.`);
       else if (files.length >= LIMITS.maxFiles) problems.push(`You can upload up to ${LIMITS.maxFiles} files.`);
-      else if (!files.some((x) => x.name === f.name && x.size === f.size)) files.push(f);
+      else if (files.reduce((s, x) => s + x.size, f.size) > LIMITS.maxTotalMB * MB) {
+        problems.push(`All files together must be under ${LIMITS.maxTotalMB} MB, so "${f.name}" was not added.`);
+      } else if (!files.some((x) => x.name === f.name && x.size === f.size)) files.push(f);
     }
-    const total = files.reduce((s, f) => s + f.size, 0);
-    if (total > LIMITS.maxTotalMB * MB) problems.push(`All files together must be under ${LIMITS.maxTotalMB} MB.`);
+    drop.classList.remove("is-busy", "is-error");
     showError([...new Set(problems)].join(" "));
-    drop.classList.remove("is-error");
     render();
   }
 
@@ -107,37 +115,35 @@
     return true;
   }
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     showError("");
+    await adding;
     if (!validate()) return;
 
-    const data = new FormData(form);
-    data.delete("files");
-    files.forEach((f) => data.append("files", f, f.name));
-
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/api/attestations");
-    xhr.responseType = "json";
     progress.hidden = false;
     const bar = progress.firstElementChild;
     bar.style.width = "2%";
     submitBtn.disabled = true;
     submitBtn.firstChild.textContent = "Uploading… ";
-    xhr.upload.onprogress = (ev) => {
-      if (ev.lengthComputable) bar.style.width = `${Math.max(2, (ev.loaded / ev.total) * 92)}%`;
-      if (ev.loaded === ev.total) submitBtn.firstChild.textContent = "Preparing your document… ";
-    };
-    xhr.onload = () => {
-      const res = xhr.response || {};
-      if (xhr.status === 201) {
-        bar.style.width = "100%";
-        return done(res);
+    const total = files.reduce((s, f) => s + f.size, 0);
+    let sent = 0;
+    try {
+      const uploads = [];
+      for (const f of files) {
+        uploads.push(await uploadFile(f, { onProgress: (loaded) => (bar.style.width = `${Math.max(2, ((sent + loaded) / total) * 90)}%`) }));
+        sent += f.size;
       }
-      fail(res.error || "Your request could not be submitted. Please try again.");
-    };
-    xhr.onerror = () => fail("Connection problem. Please check your internet connection and try again.");
-    xhr.send(data);
+      submitBtn.firstChild.textContent = "Preparing your document… ";
+      bar.style.width = "94%";
+      const fields = Object.fromEntries(new FormData(form));
+      delete fields.files;
+      const res = await api("/api/attestations", { method: "POST", json: { ...fields, uploads } });
+      bar.style.width = "100%";
+      done(res);
+    } catch (err) {
+      fail(err.message || "Your request could not be submitted. Please try again.");
+    }
   });
 
   function fail(msg) {

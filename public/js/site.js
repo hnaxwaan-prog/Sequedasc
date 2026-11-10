@@ -200,5 +200,53 @@
     }
   }
 
-  window.HL = { SITE, $, $$, api, esc, bytes, date, copy, waLink, observeReveals, reduceMotion };
+  // Large photos are resized and saved as JPEG before upload (faster, and keeps PDFs small).
+  async function shrinkImage(file) {
+    if (!/^image\/(jpeg|png)$/.test(file.type) || file.size < 900 * 1024 || typeof createImageBitmap !== "function") return file;
+    try {
+      const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+      const scale = Math.min(1, 2400 / Math.max(bitmap.width, bitmap.height));
+      const canvas = Object.assign(document.createElement("canvas"), {
+        width: Math.round(bitmap.width * scale),
+        height: Math.round(bitmap.height * scale),
+      });
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      bitmap.close();
+      const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.85));
+      if (!blob || blob.size >= file.size) return file;
+      return new File([blob], file.name.replace(/\.(png|jpe?g)$/i, "") + ".jpg", { type: "image/jpeg" });
+    } catch {
+      return file;
+    }
+  }
+
+  // Uploads one file: asks the server for a short-lived upload URL, then sends the file there.
+  async function uploadFile(file, { purpose = "document", token, onProgress } = {}) {
+    const target = await api("/api/uploads", {
+      method: "POST",
+      json: { purpose, token, name: file.name, size: file.size, type: file.type },
+    });
+    await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open(target.method || "PUT", target.url);
+      Object.entries(target.headers || {}).forEach(([k, v]) => xhr.setRequestHeader(k, v));
+      xhr.upload.onprogress = (e) => e.lengthComputable && onProgress && onProgress(e.loaded, e.total);
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) return resolve();
+        let message = "";
+        try {
+          message = JSON.parse(xhr.responseText).error;
+        } catch {}
+        reject(new Error(message || `"${file.name}" could not be uploaded (error ${xhr.status}). Please try again.`));
+      };
+      xhr.onerror = () => reject(new Error("Connection problem during the upload. Please check your internet and try again."));
+      xhr.send(file);
+    });
+    return { key: target.key, name: file.name };
+  }
+
+  window.HL = { SITE, $, $$, api, esc, bytes, date, copy, waLink, observeReveals, reduceMotion, shrinkImage, uploadFile };
 })();
