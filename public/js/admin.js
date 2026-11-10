@@ -58,17 +58,34 @@
     }
   }
 
+  // Plain-language explanations for set-up problems, shown on the sign-in card.
+  const SETUP_HELP = {
+    unreachable: (status) =>
+      `The dashboard cannot reach the attestation server${status ? ` (error ${status})` : ""}. ` +
+      "If the site is on EdgeOne Pages, open the latest deployment and check that it finished and lists the Node Function for /api.",
+    noPassword:
+      "No dashboard password is set on the server. Add ADMIN_PASSWORD (at least 8 characters) to the environment variables " +
+      "(on EdgeOne: project Settings → Environment variables), then redeploy. A new value only takes effect after a redeploy.",
+  };
+  // A missing API answers with the website's HTML 404 page instead of JSON.
+  const unreachable = (err) => !err.status || err.status === 404 || err.status >= 500 || err.notJson;
+
   async function boot() {
     try {
       session = await api("/api/admin/session");
-    } catch {
-      session = { signedIn: false, configured: true };
+    } catch (err) {
+      session = { signedIn: false, configured: true, unreachable: unreachable(err), status: err.status };
     }
     if (!session.signedIn) return showLogin();
     els.login.hidden = true;
     els.desk.hidden = false;
     els.bar.hidden = false;
-    await loadList();
+    $("#weakAlert").hidden = !session.weakPassword;
+    try {
+      await loadList();
+    } catch (err) {
+      els.queue.innerHTML = `<li class="queue__empty"><p class="alert" style="text-align:left">${esc(err.message)}</p></li>`;
+    }
     route();
   }
 
@@ -79,10 +96,9 @@
     els.bar.hidden = true;
     els.login.hidden = false;
     const err = $("#loginError");
-    if (session && !session.configured) {
-      err.textContent = "The dashboard password has not been set up yet. Add ADMIN_PASSWORD (8+ characters) to the server's .env file and restart it.";
-      err.hidden = false;
-    }
+    const help = session && (session.unreachable ? SETUP_HELP.unreachable(session.status) : !session.configured && SETUP_HELP.noPassword);
+    err.textContent = help || "";
+    err.hidden = !help;
     $("#loginForm").password.focus();
   }
 
@@ -98,7 +114,8 @@
       form.reset();
       await boot();
     } catch (ex) {
-      err.textContent = ex.message;
+      err.textContent =
+        ex.status === 503 ? SETUP_HELP.noPassword : ex.status === 401 || ex.status === 429 ? ex.message : unreachable(ex) ? SETUP_HELP.unreachable(ex.status) : ex.message;
       err.hidden = false;
     } finally {
       btn.disabled = false;
