@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Online Document Attestation | HL Attorney at Law</title>
+  <meta name="description" content="Upload your document for attestation by Uz. Hussain Layan. Pay by bank transfer and download your attested copy online." />
+  <meta name="theme-color" content="#fbf8f3" />
+  <link rel="icon" href="/assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/site.css" />
+  <link rel="stylesheet" href="/css/app.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script src="/site-config.js"></script>
+  <script src="/js/site.js" defer></script>
+  <script src="/js/attest.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <div class="topbar">
+    <div class="container topbar__inner">
+      <span><svg class="icon"><use href="/assets/icons.svg#clock"/></svg><span data-site="hours"></span></span>
+      <span class="topbar__links">
+        <a data-site-href="phone" href="#"><svg class="icon"><use href="/assets/icons.svg#phone"/></svg><span data-site="phone"></span></a>
+        <a data-site-href="email" href="#"><svg class="icon"><use href="/assets/icons.svg#mail"/></svg><span data-site="email"></span></a>
+      </span>
+    </div>
+  </div>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a href="/" class="brand" aria-label="HL Attorney at Law, home">
+        <img src="/assets/logo.png" alt="" class="brand__logo" width="34" height="38" />
+        <span class="brand__name"><b>HL</b> Attorney at Law</span>
+      </a>
+      <nav class="nav" id="nav" aria-label="Main">
+        <a href="/#about">About</a>
+        <a href="/#services">Practice Areas</a>
+        <a href="/attest" class="nav__new">Attestation <span class="tag">Online</span></a>
+        <a href="/#process">How We Work</a>
+        <a href="/#faq">FAQ</a>
+        <a href="/#contact" class="btn btn--primary btn--sm">Book a Consultation</a>
+      </nav>
+      <button class="burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <p class="crumbs anim" style="--i:0"><a href="/">Home</a><span>/</span><span>Document attestation</span></p>
+        <p class="eyebrow anim" style="--i:0">Online Service</p>
+        <h1 class="anim" style="--i:1">Online document <em>attestation</em></h1>
+        <p class="page-hero__lead anim" style="--i:2">
+          Upload a copy of your document and <span data-site="attorneyName"></span> will review it and attest it as a true copy of the original.
+          You pay by bank transfer and download the attested PDF. There's no need to visit the office.
+        </p>
+        <ol class="steps anim" style="--i:3">
+          <li><svg class="icon"><use href="/assets/icons.svg#upload"/></svg><span>Upload<small>PDF, JPG or PNG</small></span></li>
+          <li><svg class="icon"><use href="/assets/icons.svg#stamp"/></svg><span>Review &amp; stamp<small>By the attorney</small></span></li>
+          <li><svg class="icon"><use href="/assets/icons.svg#bank"/></svg><span>Pay &amp; upload slip<small>Bank transfer</small></span></li>
+          <li><svg class="icon"><use href="/assets/icons.svg#download"/></svg><span>Download<small>Your attested PDF</small></span></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section section--tight">
+      <div class="container layout">
+        <div>
+          <form class="form-card" id="attestForm" novalidate>
+            <h2 class="form-section"><span>1</span>Your details</h2>
+            <p>We'll use these to send you updates and your download link.</p>
+            <div class="row-2">
+              <label class="field"><span>Full name</span><input name="name" required autocomplete="name" maxlength="120" /></label>
+              <label class="field"><span>Phone</span><input name="phone" type="tel" required autocomplete="tel" maxlength="40" /></label>
+            </div>
+            <div class="row-2">
+              <label class="field"><span>Email</span><input name="email" type="email" required autocomplete="email" maxlength="160" /></label>
+              <label class="field"><span>ID card / passport no. <i>(optional)</i></span><input name="idNumber" maxlength="60" /></label>
+            </div>
+
+            <h2 class="form-section"><span>2</span>Your document</h2>
+            <p>Upload every page you need attested. Several files are merged into one document, in this order.</p>
+            <label class="field"><span>What is the document?</span><input name="title" required maxlength="160" placeholder="For example: Certificate III in Electrician" /></label>
+            <div class="drop" id="drop">
+              <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" multiple aria-label="Choose files" />
+              <span class="drop__icon"><svg class="icon"><use href="/assets/icons.svg#upload"/></svg></span>
+              <b>Drag files here or <u>browse</u></b>
+              <small data-limits>PDF, JPG or PNG · up to 10 files · 15 MB each</small>
+            </div>
+            <ul class="files" id="fileList"></ul>
+            <label class="field"><span>Notes for the attorney <i>(optional)</i></span><textarea name="notes" rows="3" maxlength="2000" placeholder="For example: number of copies, or where the document will be used"></textarea></label>
+            <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off" /></label>
+
+            <label class="check" id="declaration">
+              <input type="checkbox" name="declaration" value="yes" />
+              <span>I confirm these are copies of original documents in my possession, and I will show the originals if the attorney asks to see them.</span>
+            </label>
+            <div class="progress" id="progress" hidden><span></span></div>
+            <p class="alert" id="formError" role="alert" hidden></p>
+            <button type="submit" class="btn btn--primary btn--block" id="submitBtn">Submit for attestation <svg class="icon"><use href="/assets/icons.svg#arrow-right"/></svg></button>
+            <p class="form-note">Your documents are only used for this attestation and are kept confidential.</p>
+          </form>
+
+          <div class="form-card result" id="success" hidden>
+            <span class="result__badge"><svg class="icon"><use href="/assets/icons.svg#check"/></svg></span>
+            <h2>Request submitted</h2>
+            <p>Thank you. <span data-site="attorneyName"></span> will review your document. We've sent a confirmation to <b id="successEmail"></b>.</p>
+            <span class="ref" id="successRef"></span>
+            <p>Keep your tracking link. You'll use it to pay and download your attested copy.</p>
+            <div class="result__actions">
+              <a class="btn btn--primary" id="trackLink" href="#">Track my request</a>
+              <button class="btn btn--outline" id="copyTrack" type="button"><svg class="icon"><use href="/assets/icons.svg#copy"/></svg>Copy link</button>
+            </div>
+          </div>
+        </div>
+
+        <aside class="aside">
+          <div class="panel">
+            <h3>Before you start</h3>
+            <ul class="ticks">
+              <li><svg class="icon"><use href="/assets/icons.svg#check"/></svg>A clear scan or photo of every page, flat and in focus</li>
+              <li><svg class="icon"><use href="/assets/icons.svg#check"/></svg>An email address you can check, for your download link</li>
+              <li><svg class="icon"><use href="/assets/icons.svg#check"/></svg>The original documents, in case the attorney asks to see them</li>
+            </ul>
+          </div>
+          <div class="panel">
+            <h3>Fees &amp; payment</h3>
+            <p>The attorney confirms the fee after reviewing your document. It is sent by email with the bank details.</p>
+            <p>Pay by bank transfer, upload your slip on your tracking page, and your attested copy unlocks.</p>
+          </div>
+          <div class="panel panel--sample">
+            <h3>Your attestation stamp</h3>
+            <img src="/assets/stamp-sample.png" alt="Sample attestation stamp" width="760" height="492" loading="lazy" />
+            <p>Each attested page carries the attorney's stamp, signature, the date and a unique reference number that anyone can verify.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section section--sand" id="verify">
+      <div class="container verify">
+        <p class="eyebrow reveal">Verification</p>
+        <h2 class="title reveal">Verify an attested <em>document</em></h2>
+        <p class="reveal">Enter the reference number printed on the stamp, for example <b>UZHL-XXXXXXXXXX</b>.</p>
+        <form id="verifyForm" class="reveal" novalidate>
+          <input name="ref" placeholder="UZHL-" autocomplete="off" spellcheck="false" maxlength="20" aria-label="Reference number" />
+          <button class="btn btn--primary" type="submit"><svg class="icon"><use href="/assets/icons.svg#search"/></svg>Verify</button>
+        </form>
+        <div class="verify-result" id="verifyResult" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div>
+        <a href="/" class="brand brand--light">
+          <img src="/assets/logo-white.png" alt="" class="brand__logo" width="34" height="38" />
+          <span class="brand__name"><b>HL</b> Attorney at Law</span>
+        </a>
+        <p class="footer__tag">Integrity. Expertise. Dedication.</p>
+        <p><span data-site="attorneyName"></span> · Licence <span data-site="licenseNo"></span></p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <a href="/attest">Document Attestation</a>
+        <a href="/attest#verify">Verify an Attestation</a>
+        <a href="/#services">Practice Areas</a>
+        <a href="/#contact">Book a Consultation</a>
+      </div>
+      <div>
+        <h4>Firm</h4>
+        <a href="/#about">About</a>
+        <a href="/#process">How We Work</a>
+        <a href="/#faq">FAQ</a>
+        <a href="/admin">Attorney Login</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a data-site="phone" href="#"></a>
+        <a data-site="email" href="#"></a>
+        <p data-site="address"></p>
+      </div>
+    </div>
+    <div class="container footer__bottom">
+      <p>© <span data-year></span> HL Attorney at Law. All rights reserved.</p>
+      <p>The information on this website is general and is not legal advice. Contacting us does not create an attorney–client relationship.</p>
+    </div>
+  </footer>
+
+  <a href="#" class="wa js-whatsapp" aria-label="Chat with us on WhatsApp">
+    <span class="wa__tip">Questions? Chat with us</span>
+    <span class="wa__btn"><svg class="icon"><use href="/assets/icons.svg#whatsapp"/></svg></span>
+  </a>
+</body>
+</html>
