@@ -108,13 +108,15 @@
     const alertBox = $(".alert", form);
     const progress = $(".progress", form);
     const button = $("button[type=submit]", form);
+    const maxMB = Math.min(10, window.HL.SITE.attestation.maxFileMB);
     let file = null;
-    const pick = (f) => {
-      if (!f) return;
-      if (!/\.(pdf|jpe?g|png)$/i.test(f.name) && !/^(application\/pdf|image\/(jpeg|png))$/.test(f.type)) {
+    const pick = async (picked) => {
+      if (!picked) return;
+      if (!/\.(pdf|jpe?g|png)$/i.test(picked.name) && !/^(application\/pdf|image\/(jpeg|png))$/.test(picked.type)) {
         return show("Please choose a JPG, PNG or PDF file.");
       }
-      if (f.size > 10 * 1024 * 1024) return show("The slip must be smaller than 10 MB.");
+      const f = await window.HL.shrinkImage(picked);
+      if (f.size > maxMB * 1024 * 1024) return show(`The slip must be smaller than ${maxMB} MB.`);
       file = f;
       card.dataset.busy = "1";
       show("");
@@ -132,35 +134,30 @@
       e.preventDefault();
       pick(e.dataTransfer.files[0]);
     });
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
       if (!file) {
         drop.classList.add("is-error");
         return show("Please choose your payment slip first.");
       }
-      const data = new FormData();
-      data.append("slip", file, file.name);
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", `/api/track/${token}/slip`);
-      xhr.responseType = "json";
+      const bar = progress.firstElementChild;
       progress.hidden = false;
+      bar.style.width = "2%";
       button.disabled = true;
       button.textContent = "Uploading…";
-      xhr.upload.onprogress = (ev) => ev.lengthComputable && (progress.firstElementChild.style.width = `${(ev.loaded / ev.total) * 100}%`);
-      xhr.onload = () => {
-        if (xhr.status === 200) return render(xhr.response);
+      try {
+        const upload = await window.HL.uploadFile(file, {
+          purpose: "slip",
+          token,
+          onProgress: (loaded, total) => (bar.style.width = `${(loaded / total) * 95}%`),
+        });
+        render(await api(`/api/track/${encodeURIComponent(token)}/slip`, { method: "POST", json: upload }));
+      } catch (err) {
         progress.hidden = true;
         button.disabled = false;
         button.textContent = "Try again";
-        show((xhr.response && xhr.response.error) || "Upload failed. Please try again.");
-      };
-      xhr.onerror = () => {
-        progress.hidden = true;
-        button.disabled = false;
-        button.textContent = "Try again";
-        show("Connection problem. Please try again.");
-      };
-      xhr.send(data);
+        show(err.message || "Upload failed. Please try again.");
+      }
     });
   }
 

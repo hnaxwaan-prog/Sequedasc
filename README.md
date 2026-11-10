@@ -43,24 +43,47 @@ Everything is set in `.env` (see `.env.example`):
 | `FIRM_*` | Phone, WhatsApp number, email, address and office hours shown on the site |
 | `BANK_*`, `ATTESTATION_FEE`, `ATTESTATION_CURRENCY` | The account clients pay into and the default fee |
 | `REQUIRE_PAYMENT_VERIFICATION` | `false` (default): the download unlocks when the slip is uploaded. `true`: the attorney confirms the payment first |
-| `DATA_DIR` | Where requests, uploaded files and the stamp are kept. **Must survive restarts** |
+| `DATA_DIR` | Node server only: where requests, uploaded files and the stamp are kept. **Must survive restarts** |
 
 Firm name, attorney name and licence number are in `site.config.js`. If you replace the stamp
 image with a different design, adjust the date/reference positions in `site.config.js` too.
 
-## Deploying
+## Deploying on EdgeOne Pages
 
-Any host that runs Node.js and keeps files between restarts works: a small VPS, or a platform
-such as Render or Railway with a persistent disk mounted at `DATA_DIR`. Put it behind HTTPS and set
-`TRUST_PROXY=true` when it runs behind a proxy. Back up `DATA_DIR` regularly: it contains the
-clients' documents and payment slips.
+The repository is ready for EdgeOne Pages (`edgeone.json`). Each push to GitHub deploys:
+
+- the website pages, built into `dist/` by `npm run build`;
+- the attestation API (`node-functions/api/[[default]].js`) as an EdgeOne Node Function;
+- requests, documents, payment slips and the stamp, kept privately in **EdgeOne Pages Blob storage**.
+
+After connecting the repository:
+
+1. In the EdgeOne Pages project, open **Settings → Environment variables** and add at least
+   `ADMIN_PASSWORD`, `PUBLIC_URL` (your site address, e.g. `https://hlattorney.mv`), `LAWYER_EMAIL`,
+   the `SMTP_*` settings, `FIRM_PHONE`, `FIRM_WHATSAPP`, `FIRM_EMAIL`, the `BANK_*` details and
+   `ATTESTATION_FEE`. Then redeploy: phone numbers and limits are written into the pages at build time.
+2. Make sure Blob storage is available for the project (EdgeOne console, project **Storage** section).
+3. Open `/admin`, sign in, and upload the stamp with the **Stamp** button.
+
+On EdgeOne each document is limited to 5 MB in total, because EdgeOne functions can send at most
+6 MB at a time. Large photos are shrunk in the browser before upload, so phone photos fit easily.
+
+## Deploying on a Node.js server
+
+Any host that runs Node.js and keeps files between restarts also works: a small VPS, or a platform
+such as Render or Railway with a persistent disk mounted at `DATA_DIR`. Run `npm start`, put it behind
+HTTPS and set `TRUST_PROXY=true` when it runs behind a proxy. Back up `DATA_DIR` regularly: it
+contains the clients' documents and payment slips.
 
 ## Project layout
 
 ```
-server.js            Web server and API
+server.js            Runs the site as a Node.js server (files on disk)
+node-functions/      EdgeOne Pages entry point for the API (Blob storage)
+edgeone.json         EdgeOne build settings and page routes
+scripts/build.js     Builds the static pages into dist/ for EdgeOne
 site.config.js       Firm details, attestation options, stamp text positions
-lib/                 Storage, login, PDF stamping, email, file checks
+lib/                 App routes, storage, login, PDF stamping, email, file checks
 public/              Website pages (index, attest, track, admin), styles and scripts
 public/vendor/       pdf.js (Mozilla, Apache-2.0), used to preview documents in the dashboard
 private/             Optional manual location for the stamp (PNG files here are git-ignored)

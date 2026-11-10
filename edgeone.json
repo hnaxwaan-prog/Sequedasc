@@ -1,0 +1,14 @@
+{
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "nodeFunctionsConfig": { "maxDuration": 60 },
+  "rewrites": [
+    { "source": "/attest", "destination": "/attest.html" },
+    { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/track/:token", "destination": "/track.html" }
+  ],
+  "redirects": [
+    { "source": "/verify", "destination": "/attest#verify", "statusCode": 302 }
+  ]
+}

@@ -307,3 +307,4 @@
 .stamp-current { display: grid; gap: 8px; }
 .stamp-current img { width: 100%; border-radius: 12px; border: 1px solid var(--line); background: repeating-conic-gradient(#f3eee6 0% 25%, #fff 0% 50%) 50% / 18px 18px; }
 .stamp-current span { font-size: 13px; color: var(--muted); }
+.drop.is-busy { opacity: 0.6; pointer-events: none; cursor: progress; }
